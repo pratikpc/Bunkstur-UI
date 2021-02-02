@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/Bunkstur-UI/static/css/main.8c8b27cf.chunk.css",
-    "main.js": "/Bunkstur-UI/static/js/main.392ca0ba.chunk.js",
-    "main.js.map": "/Bunkstur-UI/static/js/main.392ca0ba.chunk.js.map",
+    "main.js": "/Bunkstur-UI/static/js/main.a6c4bc87.chunk.js",
+    "main.js.map": "/Bunkstur-UI/static/js/main.a6c4bc87.chunk.js.map",
     "runtime-main.js": "/Bunkstur-UI/static/js/runtime-main.46562e90.js",
     "runtime-main.js.map": "/Bunkstur-UI/static/js/runtime-main.46562e90.js.map",
     "static/js/2.7fcca396.chunk.js": "/Bunkstur-UI/static/js/2.7fcca396.chunk.js",
@@ -26,6 +26,6 @@
     "static/js/runtime-main.46562e90.js",
     "static/js/2.7fcca396.chunk.js",
     "static/css/main.8c8b27cf.chunk.css",
-    "static/js/main.392ca0ba.chunk.js"
+    "static/js/main.a6c4bc87.chunk.js"
   ]
 }
