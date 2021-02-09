@@ -17,7 +17,6 @@ import CloseIcon from '@material-ui/icons/CloseRounded';
 import MarkIcon from '@material-ui/icons/CheckCircle';
 import SubjectIcon from '@material-ui/icons/AssignmentIndRounded';
 
-import Subjects from './data/Subjects';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
 import DateFnsUtils from '@date-io/date-fns';
@@ -30,11 +29,11 @@ import {
 export default function MarkAttendance({
    open,
    onClose,
-   sendRequest,
-   onSubmit
+   onSubmit,
+   subjects
 }: {
    open: boolean;
-   sendRequest: (url: string) => any;
+   subjects: string[];
    onClose: () => void;
    onSubmit: (result: {
       subject: string;
@@ -51,11 +50,7 @@ export default function MarkAttendance({
    const [endTime, setEndTime] = useState(new Date());
 
    return (
-      <Dialog
-         open={open}
-         scroll="body"
-         aria-labelledby="form-dialog-title"
-      >
+      <Dialog open={open} scroll="body" aria-labelledby="form-dialog-title">
          <DialogTitle>Mark attendance</DialogTitle>
          <CssBaseline />
          <AppBar

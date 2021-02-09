@@ -25,6 +25,23 @@ export default function Landing() {
          attendanceType: string;
       }>
    >([]);
+   const [subjects, setSubjects] = React.useState<string[]>([]);
+   React.useEffect(() => {
+      async function PerformAsync() {
+         try {
+            const results = await sendRequest(`subjects`);
+            setSubjects(
+               Array.from(
+                  new Set<string>([...subjects, ...results])
+               )
+            );
+         } catch (err) {
+            console.error(err);
+         }
+      }
+      PerformAsync();
+   }, []);
+
    const { sendRequest } = useFetch();
    const { refresh, refreshNow } = useRefresh();
    const { isOpen, open: OpenDialogAtt, close: closeDialogAtt } = Open();
@@ -51,6 +68,16 @@ export default function Landing() {
                // Count Subject Total attendance
                counter[subject].Total = (counter[subject].Total || 0) + 1;
             }
+            setSubjects(
+               Array.from(
+                  new Set<string>([
+                     // Existing Subjects
+                     ...subjects,
+                     // Get list of all obtained subjects
+                     ...Object.keys(counter)
+                  ])
+               )
+            );
             console.log(counter);
             records = records.map(
                ({
@@ -93,7 +120,7 @@ export default function Landing() {
          <MarkAttendance
             open={isOpen}
             onClose={closeDialogAtt}
-            sendRequest={sendRequest}
+            subjects={subjects}
             onSubmit={async result => {
                console.log(JSON.stringify(result));
                await sendRequest('attendance', 'POST', JSON.stringify(result), {
@@ -102,80 +129,80 @@ export default function Landing() {
                refreshNow();
             }}
          />
-            <MaterialTable
-               title="Attendance Records"
-               data={attendance}
-               columns={[
-                  {
-                     title: 'Subject',
-                     field: 'subject',
-                     type: 'string',
-                     defaultGroupOrder: 0,
-                     groupTitle: 'Subjects'
+         <MaterialTable
+            title="Attendance Records"
+            data={attendance}
+            columns={[
+               {
+                  title: 'Subject',
+                  field: 'subject',
+                  type: 'string',
+                  defaultGroupOrder: 0,
+                  groupTitle: 'Subjects'
+               },
+               {
+                  title: 'Attendance',
+                  field: 'attendanceType',
+                  defaultGroupOrder: 1,
+                  render: attendance => attendance
+               },
+               {
+                  title: 'Date',
+                  field: 'date',
+                  type: 'date',
+                  render: date => moment(date.date || date).format('LL')
+               },
+               {
+                  title: 'Start',
+                  field: 'start',
+                  type: 'time',
+                  render: start => moment(start.start).format('LT')
+               },
+               {
+                  title: 'End',
+                  field: 'end',
+                  type: 'time',
+                  render: end => moment(end.end).format('LT')
+               }
+            ]}
+            actions={[
+               {
+                  icon: DeleteForever,
+                  tooltip: 'Delete attendance record',
+                  onClick: async (_, data) => {
+                     const { uuid } = Array.isArray(data) ? data[0] : data;
+                     await sendRequest(`attendance/${uuid}`, 'DELETE');
+                     refreshNow();
                   },
-                  {
-                     title: 'Attendance',
-                     field: 'attendanceType',
-                     defaultGroupOrder: 1,
-                     render: attendance => attendance
-                  },
-                  {
-                     title: 'Date',
-                     field: 'date',
-                     type: 'date',
-                     render: date => moment(date.date || date).format('LL')
-                  },
-                  {
-                     title: 'Start',
-                     field: 'start',
-                     type: 'time',
-                     render: start => moment(start.start).format('LT')
-                  },
-                  {
-                     title: 'End',
-                     field: 'end',
-                     type: 'time',
-                     render: end => moment(end.end).format('LT')
-                  }
-               ]}
-               actions={[
-                  {
-                     icon: DeleteForever,
-                     tooltip: 'Delete attendance record',
-                     onClick: async (_, data) => {
-                        const { uuid } = Array.isArray(data) ? data[0] : data;
-                        await sendRequest(`attendance/${uuid}`, 'DELETE');
-                        refreshNow();
-                     },
-                     position: 'row'
-                  },
-                  {
-                     icon: Add,
-                     position: 'toolbar',
+                  position: 'row'
+               },
+               {
+                  icon: Add,
+                  position: 'toolbar',
 
-                     tooltip: 'Add attendance record',
-                     onClick: (_, __) => {
-                        OpenDialogAtt();
-                     }
-                  },
-                  {
-                     icon: Refresh,
-                     position: 'toolbar',
-                     tooltip: 'Refresh',
-                     onClick: (_, __) => refreshNow()
+                  tooltip: 'Add attendance record',
+                  onClick: (_, __) => {
+                     OpenDialogAtt();
                   }
-               ]}
-               options={{
-                  grouping: true,
-                  addRowPosition: 'first',
-                  rowStyle: {
-                     backgroundColor: '#EEE'
-                  },
-                  paging: false,
-                  // Set actions to last index
-                  actionsColumnIndex: -1
-               }}
-            />
+               },
+               {
+                  icon: Refresh,
+                  position: 'toolbar',
+                  tooltip: 'Refresh',
+                  onClick: (_, __) => refreshNow()
+               }
+            ]}
+            options={{
+               grouping: true,
+               addRowPosition: 'first',
+               rowStyle: {
+                  backgroundColor: '#EEE'
+               },
+               paging: false,
+               // Set actions to last index
+               actionsColumnIndex: -1
+            }}
+         />
       </>
    );
 }
