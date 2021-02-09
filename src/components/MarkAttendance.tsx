@@ -44,9 +44,7 @@ export default function MarkAttendance({
       attendanceType: string;
    }) => Promise<void>;
 }) {
-   const subjects = Subjects(sendRequest);
-
-   const [subjectSelected, setSubject] = useState('aa');
+   const [subjectSelected, setSubject] = useState(subjects[0] || '');
    const [attendanceType, setStatus] = useState('P');
    const [date, setDate] = useState(new Date());
    const [startTime, setStartTime] = useState(new Date());
